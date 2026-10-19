@@ -1,0 +1,31 @@
+rules_version = '2';
+
+// Suggested Firestore security rules for the shared DataCare project (web + Android).
+// Publish in: Firebase console -> Firestore Database -> Rules.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+
+    function myRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    // A user profile can be read/changed by its owner or a System Administrator.
+    // Owners may not change their own role after registration.
+    match /users/{uid} {
+      allow create: if signedIn() && request.auth.uid == uid;
+      allow read: if signedIn() && (request.auth.uid == uid || myRole() == 'System Administrator');
+      allow update: if signedIn() && (
+        (request.auth.uid == uid && request.resource.data.role == resource.data.role)
+        || myRole() == 'System Administrator');
+    }
+
+    // Hospital data: any signed-in user (the app and website hide screens by role).
+    match /{collection}/{docId} {
+      allow read, write: if signedIn()
+        && collection in ['patients', 'appointments', 'prescriptions', 'billing',
+                          'departments', 'staff', 'inventory', 'medicalRecords'];
+    }
+  }
+}
