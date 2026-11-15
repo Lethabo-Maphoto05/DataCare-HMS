@@ -6,3 +6,4 @@ serviceAccountKey.json
 *service-account*.json
 *.log
 .DS_Store
+android-app/app/google-services.json
