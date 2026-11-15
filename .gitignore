@@ -1,10 +1,8 @@
 node_modules/
 .env
-*.keystore
-android-app/app/google-services.json
-android-app/**/build/
-android-app/.gradle/
-android-app/local.properties
-.idea/
+.env.*
+!.env.example
 serviceAccountKey.json
-*firebase-adminsdk*.json
+*service-account*.json
+*.log
+.DS_Store

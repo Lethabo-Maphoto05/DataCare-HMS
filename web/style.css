@@ -2134,3 +2134,262 @@ body.menu-open {
 .mobile-menu-btn:hover {
     background: #f3eef8;
 }
+
+
+/* =========================================================
+   UPDATED SUCCESS AND ERROR NOTIFICATIONS
+========================================================= */
+
+.notification-popup {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    max-width: 420px;
+    width: calc(100% - 40px);
+    padding: 16px 20px;
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    z-index: 10000;
+}
+
+.notification-popup.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.notification-popup.success {
+    background: #16865f;
+}
+
+.notification-popup.error {
+    background: #d93636;
+}
+
+@media (max-width: 600px) {
+    .notification-popup {
+        left: 15px;
+        right: 15px;
+        bottom: 15px;
+        width: auto;
+        max-width: none;
+    }
+}
+
+
+/* =========================================================
+   DATACARE NAVY, BLUE AND WHITE THEME
+   Sidebar and workspace overrides
+========================================================= */
+:root {
+    --dc-navy: #0b1f3a;
+    --dc-navy-deep: #07162b;
+    --dc-blue: #1769aa;
+    --dc-blue-light: #eaf3fc;
+    --dc-white: #ffffff;
+    --dc-text: #24364b;
+}
+
+body,
+.app,
+.main-content {
+    background: #f3f6fb;
+    color: var(--dc-text);
+}
+
+.sidebar {
+    background: var(--dc-navy);
+    color: var(--dc-white);
+    border-right: 1px solid #203854;
+    box-shadow: 5px 0 22px rgba(7, 22, 43, 0.10);
+}
+
+.sidebar-logo {
+    background: var(--dc-navy-deep);
+    border-bottom: 1px solid #203854;
+}
+
+.sidebar-logo h2,
+.sidebar-logo span {
+    color: var(--dc-white);
+}
+
+.sidebar-logo span {
+    opacity: .72;
+}
+
+.logo-icon {
+    background: var(--dc-blue);
+    color: var(--dc-white);
+}
+
+.sidebar-nav {
+    background: var(--dc-navy);
+}
+
+.nav-title {
+    color: #9db2cc;
+}
+
+.nav-link {
+    color: #d5dfec;
+    background: transparent;
+    border: 1px solid transparent;
+}
+
+.nav-link i {
+    color: #9dbde0;
+}
+
+.nav-link:hover {
+    color: var(--dc-white);
+    background: #17395f;
+    border-color: #28517c;
+}
+
+.nav-link:hover i {
+    color: #ffffff;
+}
+
+.nav-link.active,
+.nav-link[aria-current="page"] {
+    color: var(--dc-white);
+    background: var(--dc-blue);
+    border-color: #3d8bc9;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .16);
+}
+
+.nav-link.active i,
+.nav-link[aria-current="page"] i {
+    color: #ffffff;
+}
+
+.sidebar-bottom {
+    background: var(--dc-navy-deep);
+    border-top: 1px solid #203854;
+}
+
+.support-card {
+    background: #132d4c;
+    color: #ffffff;
+}
+
+.support-card strong,
+.support-card small,
+.support-card > i {
+    color: #e5eef9;
+}
+
+/* Keep all workspace cards and controls in the same blue palette. */
+#datacareWorkspace .dc-welcome {
+    background: #eaf3fc;
+    border-color: #c8dcef;
+}
+
+#datacareWorkspace .dc-card {
+    border-color: #d8e2ee;
+    box-shadow: 0 4px 18px rgba(11, 31, 58, .07);
+}
+
+#datacareWorkspace .dc-card h3,
+#datacareWorkspace .dc-stat {
+    color: var(--dc-navy);
+}
+
+#datacareWorkspace .dc-card label {
+    color: #263c56;
+}
+
+#datacareWorkspace .dc-card input,
+#datacareWorkspace .dc-card select,
+#datacareWorkspace .dc-card textarea {
+    border-color: #cbd7e5;
+}
+
+#datacareWorkspace .dc-card input:focus,
+#datacareWorkspace .dc-card select:focus,
+#datacareWorkspace .dc-card textarea:focus {
+    outline: 2px solid rgba(23, 105, 170, .18);
+    border-color: var(--dc-blue);
+}
+
+#datacareWorkspace .dc-card button,
+#datacareWorkspace .dc-btn {
+    background: var(--dc-blue);
+    color: #ffffff;
+}
+
+#datacareWorkspace .dc-card button:hover,
+#datacareWorkspace .dc-btn:hover {
+    background: var(--dc-navy);
+}
+
+#datacareWorkspace .dc-card button.secondary {
+    background: #52677f;
+}
+
+#datacareWorkspace .dc-table th {
+    background: #eaf1f8;
+    color: var(--dc-navy);
+}
+
+.mobile-menu-btn {
+    color: #ffffff !important;
+    background: var(--dc-navy) !important;
+    border: 1px solid #294767 !important;
+}
+
+.mobile-menu-btn:hover {
+    background: var(--dc-blue) !important;
+}
+
+@media (max-width: 900px) {
+    .sidebar {
+        background: var(--dc-navy);
+    }
+}
+
+/* Ensure role-hidden navigation links stay hidden despite nav layout styles. */
+.sidebar-nav [hidden] {
+    display: none !important;
+}
+
+/* DataCare feature pages: clean spacing and separate feature screens */
+#datacareWorkspace { width:100%; max-width:100%; }
+.dc-feature-page[hidden] { display:none !important; }
+.dc-section-heading { display:flex; justify-content:space-between; align-items:flex-end; margin:4px 0 18px; }
+.dc-section-heading h2 { margin:0 0 5px; color:#102b4e; font-size:24px; }
+.dc-section-heading p { margin:0; color:#64758a; }
+.dc-feature-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; align-items:start; }
+.dc-feature-grid > .dc-card { height:100%; min-width:0; }
+.dc-feature-grid > .dc-card:only-child { grid-column:1/-1; }
+.dc-report-stats { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+.dc-report-stats p { margin:0; padding:12px; background:#f1f6fc; border-radius:8px; }
+.sidebar-nav a.active { background:#1769aa !important; color:#fff !important; border-left:4px solid #60a5fa; }
+.sidebar-nav a[hidden], .sidebar-nav .nav-title[hidden] { display:none !important; }
+@media(max-width:850px) { .dc-feature-grid { grid-template-columns:1fr; } .dc-welcome { align-items:flex-start; flex-direction:column; } #datacareWorkspace { padding:14px; } }
+
+
+/* Simple Contact IT Support popup */
+.support-card[role="button"] { cursor:pointer; transition:background .2s ease, transform .2s ease; }
+.support-card[role="button"]:hover { background:#1b416b; transform:translateY(-1px); }
+.support-card[role="button"]:focus-visible { outline:3px solid #60a5fa; outline-offset:3px; }
+.dc-support-overlay { position:fixed; inset:0; z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(5,18,35,.62); }
+.dc-support-dialog { position:relative; width:min(100%,420px); padding:30px 26px 24px; border:1px solid #d7e3f0; border-radius:18px; background:#fff; color:#102b4e; text-align:center; box-shadow:0 20px 60px rgba(4,20,40,.28); }
+.dc-support-close { position:absolute; top:12px; right:14px; width:34px; height:34px; border:0; border-radius:50%; background:#edf3f9; color:#102b4e; font-size:24px; line-height:1; cursor:pointer; }
+.dc-support-icon { display:grid; place-items:center; width:58px; height:58px; margin:0 auto 14px; border-radius:50%; background:#eaf3fc; color:#1769aa; font-size:25px; }
+.dc-support-dialog h2 { margin:0 0 10px; color:#102b4e; font-size:22px; }
+.dc-support-dialog p { margin:0 auto 22px; max-width:320px; color:#53677f; line-height:1.6; }
+.dc-support-ok { min-width:110px; padding:11px 22px; border:0; border-radius:9px; background:#1769aa; color:#fff; font-weight:700; cursor:pointer; }
+.dc-support-ok:hover { background:#102b4e; }
+.dc-support-close:focus-visible,.dc-support-ok:focus-visible { outline:3px solid #60a5fa; outline-offset:3px; }

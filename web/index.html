@@ -11,7 +11,7 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <!-- Main CSS -->
-    <link rel="stylesheet" href="web/style.css">
+    <link rel="stylesheet" href="style.css">
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -271,6 +271,22 @@
                             </div>
 
 
+                            <div class="input-group">
+                                <label for="registerPhone">Cell Number</label>
+                                <div class="input-icon">
+                                    <i class="fa-solid fa-phone"></i>
+                                    <input type="tel" id="registerPhone" placeholder="0821234567" autocomplete="tel" required>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="registerIdNumber">South African ID Number</label>
+                                <div class="input-icon">
+                                    <i class="fa-solid fa-id-card"></i>
+                                    <input type="text" id="registerIdNumber" inputmode="numeric" maxlength="13" minlength="13" pattern="[0-9]{13}" placeholder="13-digit ID number" required>
+                                </div>
+                            </div>
+
                             <!-- PASSWORD -->
                             <div class="input-group full-width">
 
@@ -285,8 +301,9 @@
                                     <input
                                         type="password"
                                         id="registerPassword"
-                                        placeholder="Create a password"
-                                        minlength="6"
+                                        placeholder="At least 10 characters: upper, lower, number and symbol"
+                                        minlength="10"
+                                        pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{10,}"
                                         autocomplete="new-password"
                                         required>
 
@@ -295,63 +312,10 @@
                             </div>
 
 
-                            <!-- ROLE -->
-                            <div class="input-group full-width">
-
-                                <label for="registerRole">
-                                    User Role
-                                </label>
-
-                                <div class="input-icon">
-
-                                    <i class="fa-solid fa-user-shield"></i>
-
-                                    <select id="registerRole" required>
-
-                                        <option value="">
-                                            Select your role
-                                        </option>
-
-                                        <option value="Patient">
-                                            Patient
-                                        </option>
-
-                                        <option value="Receptionist">
-                                            Receptionist
-                                        </option>
-
-                                        <option value="Doctor">
-                                            Doctor
-                                        </option>
-
-                                        <option value="Nurse">
-                                            Nurse
-                                        </option>
-
-                                        <option value="Pharmacist">
-                                            Pharmacist
-                                        </option>
-
-                                        <option value="Billing Clerk">
-                                            Billing Clerk
-                                        </option>
-
-                                        <option value="Hospital Manager">
-                                            Hospital Manager
-                                        </option>
-
-                                        <option value="System Administrator">
-                                            System Administrator
-                                        </option>
-
-                                    </select>
-
-                                </div>
-
-                            </div>
-
                         </div>
 
+
+                        <p class="form-subtitle">Registration is for patients only. Your account will remain pending until a system administrator approves it. You must verify your email address before logging in.</p>
 
                         <button
                             type="submit"
@@ -438,7 +402,7 @@
             <!-- DASHBOARD -->
 
             <a
-                href="index.html"
+                href="#dashboard"
                 class="nav-link"
                 data-page="dashboard">
 
@@ -452,7 +416,7 @@
             <!-- SERVICES -->
 
             <a
-                href="pages/services.html"
+                href="#services"
                 class="nav-link"
                 data-page="services">
 
@@ -466,7 +430,7 @@
             <!-- PATIENTS -->
 
             <a
-                href="pages/patient.html"
+                href="#patient"
                 class="nav-link"
                 data-page="patient">
 
@@ -480,7 +444,7 @@
             <!-- APPOINTMENTS -->
 
             <a
-                href="pages/appointments.html"
+                href="#appointments"
                 class="nav-link"
                 data-page="appointments">
 
@@ -494,7 +458,7 @@
             <!-- PRESCRIPTIONS -->
 
             <a
-                href="pages/prescriptions.html"
+                href="#prescriptions"
                 class="nav-link"
                 data-page="prescriptions">
 
@@ -508,7 +472,7 @@
             <!-- BILLING -->
 
             <a
-                href="pages/billing.html"
+                href="#billing"
                 class="nav-link"
                 data-page="billing">
 
@@ -522,7 +486,7 @@
             <!-- REPORTS -->
 
             <a
-                href="pages/reports.html"
+                href="#reports"
                 class="nav-link"
                 data-page="reports">
 
@@ -541,10 +505,9 @@
 
 
             <a
-                href="#"
+                href="#users"
                 class="nav-link"
-                data-page="users"
-                onclick="showNotification('User Management is available to System Administrators.')">
+                data-page="users">
 
                 <i class="fa-solid fa-users"></i>
 
@@ -559,7 +522,7 @@
 
         <div class="sidebar-bottom">
 
-            <div class="support-card">
+            <div class="support-card" id="itSupportCard" role="button" tabindex="0" aria-label="Contact IT Support">
 
                 <i class="fa-solid fa-headset"></i>
 
@@ -1176,7 +1139,7 @@
      JAVASCRIPT
 ===================================================== -->
 
-<script type="module" src="web/main.js"></script>
+<script type="module" src="main.js"></script>
 
 </body>
 </html>

@@ -1,108 +1,91 @@
 # DataCare-HMS
 
-DataCare is a Hospital Management System (HMS) designed to support the daily operations of a hospital by providing a centralised digital platform for managing patients, appointments, medical records, prescriptions, pharmacy activities, billing and reporting.
+DataCare is a hospital-management academic prototype. It provides role-based workspaces for administrators, doctors and patients, including patient registration approval, appointments, prescriptions, a demonstration medicine catalogue, invoices, ward beds, notifications and summary reporting.
 
-The system was developed as part of a Work Integrated Learning (WIL) project and is based on the operational requirements of Netcare Alberton Hospital.
+## Technology
 
-Project Overview
-Hospitals manage large amounts of information every day, including patient information, appointments, medical records, prescriptions, billing information and medicine stock.
-Traditional or disconnected processes can result in:
-- Duplicate information
-- Delays in accessing patient information
-- Difficulty tracking appointments
-- Errors in medical records
-- Inefficient pharmacy and stock management
-- Delays in billing
-- Limited access to accurate reports
-DataCare aims to address these challenges by providing an organised and user-friendly digital hospital management solution.
+- Web interface: HTML, CSS and JavaScript modules.
+- Authentication: Firebase Authentication (Email/Password).
+- Application database: Cloud Firestore.
+- API: Node.js, Express and Firebase Admin SDK.
 
+**PostgreSQL has been removed from the API.** The API reads and writes application records through the Firebase Admin SDK. Admin SDK access bypasses Firestore Security Rules, so role and record-ownership checks are enforced in the API.
 
-Project Objectives
-The main objectives of DataCare are to:
-- Digitise hospital management processes.
-- Improve patient information management.
-- Simplify patient registration.
-- Manage appointments efficiently.
-- Maintain electronic medical records.
-- Support prescription and pharmacy management.
-- Monitor medicine inventory.
-- Support hospital billing processes.
-- Generate useful management reports.
-- Improve accessibility of hospital information.
-- Reduce manual administrative work.
-- Provide secure access based on user roles.
+## Important security notes
 
+- Never upload `api/serviceAccountKey.json`, `.env`, or any service-account JSON to GitHub or share it in chat. These files are excluded by `.gitignore`.
+- If an old service-account key was ever committed or shared, revoke it in Google Cloud IAM and use a newly generated key.
+- Use test accounts and fictional patient information only. This is an academic prototype, not a production clinical system. It has not undergone the security, privacy, clinical or regulatory review required for real patient data.
+- The “Online Demo” payment is simulated. It does not process a bank-card payment or transfer money. Medical Aid is also a demonstration record only.
+- The sample service prices and medicine stock in `scripts/seed-catalog.js` are demonstration values. Review them before using the catalogue.
 
-Main Features
-User Authentication
-The system provides secure login functionality for authorised users.
-Users can access the system according to their assigned role and permissions.
+## Firebase setup
 
-Patient Management
-The patient management functionality allows authorised staff to:
-- Register patients
-- View patient information
-- Update patient information
-- Search for patients
-- Maintain patient records
-- Track medical history
+1. Open the existing Firebase project used by DataCare-HMS.
+2. Confirm that **Authentication → Sign-in method → Email/Password** is enabled.
+3. Confirm that **Firestore Database** exists.
+4. Generate a new Firebase Admin service-account key if the previous key was exposed. Save it locally as `api/serviceAccountKey.json`. Do not add it to the ZIP or Git.
+5. Keep Firestore client rules restrictive. The web client does not directly read or write application collections; protected API routes use the Admin SDK.
 
-Appointment Management
-The appointment functionality allows hospital staff to:
-- Schedule appointments
-- View upcoming appointments
-- Update appointments
-- Cancel appointments
-- Manage appointment information
+## Run locally (Windows PowerShell)
 
-Hospital Services
-DataCare supports the management of hospital-related services and departments.
-This allows information to be organised according to different hospital functions.
+1. Install Node.js 20 or later.
+2. Open a terminal in the `api` folder.
+3. Copy `.env.example` to `.env` and edit `.env`:
+   - Set `FIREBASE_SERVICE_ACCOUNT_PATH=./serviceAccountKey.json`.
+   - Set `ALLOWED_ORIGINS` to the local web origin you use.
+   - Set `ADMIN_EMAILS` to the verified Firebase Authentication email address. If both administrators share the same login, list that email once. If they have separate accounts, list both addresses separated by a comma.
+4. Install dependencies and start the API:
 
-Pharmacy Management
-The pharmacy functionality supports:
-- Prescription management
-- Medicine information
-- Medicine stock management
-- Inventory monitoring
-- Dispensing-related information
+   ```powershell
+   npm install
+   npm start
+   ```
 
-Billing Management
-The billing functionality supports the recording and management of patient billing information.
-This may include:
-- Patient billing
-- Medical aid information
-- Charges
-- Payments
-- Billing records
+5. From the `api` folder, provision the administrator account. The email must already exist in Firebase Authentication and be email-verified. If both administrators use the same login, run this command once:
 
-Reports
-The reporting section provides access to useful hospital information and management reports.
-Reports can assist authorised staff with monitoring hospital activities and making informed decisions.
+   ```powershell
+   npm run add-admin -- your-email@example.com
+   ```
 
-Emergency Case Recording
-The system supports the recording of emergency cases so that important information can be captured and accessed when required.
+   If administrators have separate accounts, run the command once for each address. The script uses the Firebase account display name unless you provide an optional name after the email.
 
-Medical Records
-The system supports the maintenance of electronic medical records, allowing relevant patient medical information to be stored in a structured manner.
+6. Add the initial demonstration services and medicines once:
 
+   ```powershell
+   npm run seed-catalog
+   ```
 
-System Interfaces
-DataCare is designed around two related interfaces:
-Web Application
-The web application provides a larger interface for hospital staff who work primarily from computers.
+   This creates the `services` and `medications` collections if they do not already contain those document IDs. Change the sample data/prices to suit your demonstration.
 
-The web interface includes areas such as:
-- Dashboard
-- Patient Management
-- Appointments
-- Medical Records
-- Pharmacy
-- Billing
-- Reports
-- User Management
+7. Serve the `web` folder with VS Code Live Server. The default API URL is `http://localhost:3000/api`. The website can override it by defining `window.DATACARE_API_BASE` before `main.js` loads.
 
-Mobile Application
-The mobile interface follows the same DataCare functionality and terminology while adapting the layout for smaller screens.
-The mobile application is intended to provide convenient access to important hospital functions.
-The website and mobile application represent the same DataCare Hospital Management System, rather than two separate systems.
+## Firestore collections
+
+The API uses these collections: `users`, `patients`, `doctors`, `services`, `medications`, `wards`, `admissions`, `appointments`, `prescriptions`, `prescription_items`, `invoices`, `invoice_items`, `payments`, `notifications`, `audit_logs`, and `_counters`.
+
+Document IDs for most business records are numeric strings generated by `_counters`; user documents use the Firebase Authentication UID. The `seed-catalog` script supplies a small demonstration service/medicine catalogue. Other collections are populated by the application as users and administrators perform actions.
+
+## Account workflow
+
+- Public registration creates a Firebase Authentication account and a Firestore patient profile with `approval_status: Pending`.
+- The API does not offer public role selection or public administrator registration.
+- Only the address or addresses in `ADMIN_EMAILS` can be provisioned using the administrator script. One address is supported when multiple people share a login; separate accounts are recommended when individual activity tracking is needed. The script requires the Firebase account to exist and be email-verified.
+- Administrators approve/reject patient registrations and create doctor accounts.
+- Doctors can view their assigned appointments and create prescriptions for patients with an appointment assigned to them.
+- Patients can access only their own profile, appointments, prescriptions, invoices and notifications.
+
+## API health checks
+
+- `GET /health` checks that the API process is running.
+- `GET /health/db` checks Firestore connectivity and returns `{"database":"connected","provider":"Firestore"}` when successful.
+
+## Tests
+
+From the `api` folder:
+
+```powershell
+npm test
+```
+
+The automated tests cover basic health and authentication guards. They do not replace end-to-end testing of every workflow in Firebase. Test registration, approval, doctor creation, appointments, prescription/invoice creation, payment demonstration, ward allocation and account isolation using separate test accounts before presenting.

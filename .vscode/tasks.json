@@ -1,0 +1,20 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start DataCare web server",
+      "type": "shell",
+      "command": "node server.js",
+      "options": { "cwd": "${workspaceFolder}/DataCare-HMS/web" },
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": { "regexp": "^$" },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".",
+          "endsPattern": "DataCare server running"
+        }
+      }
+    }
+  ]
+}

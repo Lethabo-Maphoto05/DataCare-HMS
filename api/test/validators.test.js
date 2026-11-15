@@ -35,11 +35,11 @@ describe('patient validation', () => {
 
 describe('appointment validation', () => {
   test('bad time is rejected', () => {
-    const errors = v.validateAppointment({ patient_id: 1, doctor_id: 1, appointment_date: '2026-11-02', appointment_time: '25:99' });
+    const errors = v.validateAppointment({ patient_id: 1, doctor_id: 1, appointment_date: '2099-11-02', appointment_time: '25:99' });
     expect(errors).toContain('appointment_time must be HH:MM');
   });
   test('valid appointment passes', () => {
-    expect(v.validateAppointment({ patient_id: 1, doctor_id: 1, appointment_date: '2026-11-02', appointment_time: '09:30' })).toHaveLength(0);
+    expect(v.validateAppointment({ patient_id: 1, doctor_id: 1, appointment_date: '2099-11-02', appointment_time: '09:30' })).toHaveLength(0);
   });
 });
 
@@ -55,5 +55,22 @@ describe('prescription validation', () => {
   test('quantity 0 is rejected', () => {
     const bad = { ...good, items: [{ medication_id: 1, quantity: 0, dosage: 'x' }] };
     expect(v.validatePrescription(bad)).toContain('items[0].quantity must be 1 or more');
+  });
+});
+
+describe('registration validation', () => {
+  test('requires strong password, valid email, cell and South African ID checksum', () => {
+    expect(v.validateRegistration({
+      first_name:'Lebo',last_name:'Mokoena',phone_number:'0821234567',
+      id_number:'0000000000000',email:'lebo@example.com',password:'Weakpass1'
+    }).length).toBeGreaterThan(0);
+  });
+  test('rejects weak passwords', () => {
+    expect(v.isStrongPassword('password')).toBe(false);
+    expect(v.isStrongPassword('StrongPass123!')).toBe(true);
+  });
+  test('accepts only plausible email format', () => {
+    expect(v.isValidEmail('name@example.co.za')).toBe(true);
+    expect(v.isValidEmail('not-an-email')).toBe(false);
   });
 });

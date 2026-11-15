@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "458956157552",
+    "firebase_url": "https://datacare-hms-8fefe-default-rtdb.firebaseio.com",
+    "project_id": "datacare-hms-fcb83",
+    "storage_bucket": "datacare-hms-fcb83.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:458956157552:web:51e1b5d742e8c44c18bab5",
+        "android_client_info": {
+          "package_name": "com.datacare.hms"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "386921283076-lt47bv0giu5hgdcqi4dr5r93qdc2nq6l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.datacare.hms",
+            "certificate_hash": "73943c4f3df7fbed3890e9780ff4f71b2700ecc5"
+          }
+        },
+        {
+          "client_id": "386921283076-fhsaftlmdsk127ufatasnbbvldhbkacc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAff9p7azW-yGkQhUPRG62hOATTQp3Eu44"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "386921283076-fhsaftlmdsk127ufatasnbbvldhbkacc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
