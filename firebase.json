@@ -1,0 +1,14 @@
+{
+  "hosting": {
+    "site": "datacare-hms",
+    "public": "web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "server.js",
+      "launch.json",
+      "settings.json"
+    ]
+  }
+}

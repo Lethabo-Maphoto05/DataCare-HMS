@@ -53,7 +53,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 // Set this to your deployed API URL when hosting the website.
-const API_BASE = window.DATACARE_API_BASE || 'http://localhost:3000/api';
+const API_BASE = window.DATACARE_API_BASE || 'https://datacare-api-gtbedgf2h9ajf5c0.centralindia-01.azurewebsites.net/api';
 
 
 // ==========================================
