@@ -1,29 +1,17 @@
-# Database design (Cloud Firestore)
+# Shared DataCare database
 
-Firestore is a document database: each **collection** below is a "table" and each **document** a "record". Field names are identical to the website. Simulated data (>= 10 per table) comes from `SeedData.kt`.
+The Android application does not define a separate database or a second set of collections. It uses the same Node.js API and Cloud Firestore data used by the web application.
 
-| Collection (table) | Key | Fields | Seed records |
-|---|---|---|---|
-| `users` | doc id = Firebase Auth uid | uid, firstName, lastName, email, role, createdAt | created by registration |
-| `patients` | patientID (PAT-nnnnnn) | firstName, lastName, gender, dateOfBirth, phone, address, medicalHistory, emergencyContact, createdBy, createdAt | 12 |
-| `appointments` | appointmentID (APT-nnnnnn) | patient, doctor, date, time, appointmentType, wardAllocation, status, createdBy, createdAt | 12 |
-| `prescriptions` | prescriptionID (RX-nnnnnn) | patientID, doctorID, medication, dosage, notes, prescriptionDate, status, createdBy, createdAt | 12 |
-| `billing` | invoiceNumber (INV-nnnnnn) | patientID, consultationFee, medicationCost, totalAmount, medicalAid, paymentMethod, outstandingBalance, status, createdBy, createdAt | 12 |
-| `departments` | departmentID | name, head, location, phone, description | 10 |
-| `staff` | staffID | firstName, lastName, role, department, email, phone | 10 |
-| `inventory` | itemID | itemName, category, quantity, reorderLevel, unitCost, supplier | 10 |
-| `medicalRecords` | recordID | patientID, diagnosis, treatment, doctor, recordDate, notes | 10 |
+The backend's current collections include:
 
-## Relationships (logical, as in the Task 1 ERD)
-- `appointments.patient`, `prescriptions.patientID`, `billing.patientID`, `medicalRecords.patientID` -> `patients.patientID`
-- `users.role` -> one of the 8 roles (UserRole); drives screen access
-- `staff.department` -> `departments.name`
+`users`, `patients`, `doctors`, `services`, `medications`, `wards`, `admissions`, `appointments`, `prescriptions`, `prescription_items`, `invoices`, `invoice_items`, `payments`, `notifications`, `audit_logs` and `_counters`.
 
-## Business rules
-- `totalAmount = consultationFee + medicationCost`
-- `status = "Outstanding"` if `outstandingBalance > 0`, otherwise `"Paid"`
-- New appointments start as `Confirmed`; new prescriptions start as `Active`
-- Passwords are **not** stored in Firestore; Firebase Authentication stores a salted hash
+The API generates record IDs and validates relationships. The Android client sends API request bodies using the same snake_case field names as the web application. It does not seed demonstration records or write directly to Firestore.
 
-## Security
-`firestore.rules` requires sign-in for all hospital data, lets only the owner or a System Administrator read a profile, and blocks users from changing their own role.
+## Data flow
+
+`Kotlin app → Firebase ID token → Express API → Firebase Admin SDK → existing Firestore database`
+
+The server is responsible for role permissions, account approval, patient/doctor ownership and record updates. Do not deploy the old `firestore.rules` file from the original Android project; it allowed all signed-in users to write every hospital collection and is not part of this API-based design.
+
+Use fictional data only. This academic prototype is not approved for real patient records.

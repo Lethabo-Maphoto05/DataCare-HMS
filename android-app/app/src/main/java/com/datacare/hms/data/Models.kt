@@ -1,140 +1,177 @@
 package com.datacare.hms.data
 
-import com.google.firebase.firestore.DocumentId
+import com.google.gson.annotations.SerializedName
 
-/*
- * Field names match the documents written by the DataCare web app (js/main.js),
- * so records created on either platform appear on both.
- * Every property has a default value because Firestore needs a no-argument constructor.
- */
-
-data class UserProfile(
-    val uid: String = "",
-    val firstName: String = "",
-    val lastName: String = "",
+data class AppUser(
+    @SerializedName("user_id") val userId: String = "",
     val email: String = "",
-    val role: String = "Patient",
-    val createdAt: String = ""
-) {
-    fun fullName(): String = "$firstName $lastName".trim().ifBlank { email }
-}
+    @SerializedName("first_name") val firstName: String = "",
+    @SerializedName("last_name") val lastName: String = "",
+    @SerializedName("full_name") val fullName: String = "",
+    val role: String = "",
+    @SerializedName("patient_id") val patientId: Int? = null,
+    @SerializedName("patient_number") val patientNumber: String? = null,
+    @SerializedName("doctor_id") val doctorId: Int? = null,
+    val specialisation: String? = null
+)
+
+data class Summary(
+    val patients: Int = 0,
+    val doctors: Int = 0,
+    val appointments: Int = 0,
+    val prescriptions: Int = 0,
+    val revenue: Double = 0.0
+)
+
+data class PendingRegistration(
+    @SerializedName("user_id") val userId: String = "",
+    val email: String = "",
+    @SerializedName("first_name") val firstName: String = "",
+    @SerializedName("last_name") val lastName: String = "",
+    @SerializedName("phone_number") val phoneNumber: String = "",
+    @SerializedName("id_number") val idNumber: String = "",
+    @SerializedName("approval_status") val approvalStatus: String = "Pending"
+)
 
 data class Patient(
-    @DocumentId val docId: String = "",
-    val patientID: String = "",
-    val firstName: String = "",
-    val lastName: String = "",
-    val gender: String = "",
-    val dateOfBirth: String = "",
-    val phone: String = "",
-    val address: String = "",
-    val medicalHistory: String = "",
-    val emergencyContact: String = "",
-    val createdBy: String = "",
-    val createdAt: String = ""
+    @SerializedName("patient_id") val patientId: Int = 0,
+    @SerializedName("user_id") val userId: String? = null,
+    @SerializedName("patient_number") val patientNumber: String = "",
+    @SerializedName("first_name") val firstName: String = "",
+    @SerializedName("last_name") val lastName: String = "",
+    @SerializedName("phone_number") val phoneNumber: String = "",
+    @SerializedName("id_number") val idNumber: String? = null,
+    val gender: String? = null,
+    @SerializedName("date_of_birth") val dateOfBirth: String? = null,
+    val address: String? = null
 ) {
-    fun fullName(): String = "$firstName $lastName".trim()
+    val displayName: String get() = "$firstName $lastName".trim()
 }
 
+data class Doctor(
+    @SerializedName("doctor_id") val doctorId: Int = 0,
+    @SerializedName("user_id") val userId: String? = null,
+    @SerializedName("full_name") val fullName: String = "",
+    val specialisation: String = "",
+    @SerializedName("department_name") val departmentName: String? = null,
+    @SerializedName("contact_number") val contactNumber: String? = null,
+    val email: String? = null,
+    val availability: String = "Available"
+)
+
 data class Appointment(
-    @DocumentId val docId: String = "",
-    val appointmentID: String = "",
-    val patient: String = "",
-    val doctor: String = "",
-    val date: String = "",
-    val time: String = "",
-    val appointmentType: String = "",
-    val wardAllocation: String = "",
-    val status: String = "Confirmed",
-    val createdBy: String = "",
-    val createdAt: String = ""
+    @SerializedName("appointment_id") val appointmentId: Int = 0,
+    @SerializedName("patient_id") val patientId: Int = 0,
+    @SerializedName("doctor_id") val doctorId: Int = 0,
+    @SerializedName("appointment_date") val appointmentDate: String = "",
+    @SerializedName("appointment_time") val appointmentTime: String = "",
+    @SerializedName("appointment_type") val appointmentType: String = "Consultation",
+    val status: String = "Pending",
+    @SerializedName("ward_allocation") val wardAllocation: String? = null,
+    @SerializedName("patient_name") val patientName: String? = null,
+    @SerializedName("patient_number") val patientNumber: String? = null,
+    @SerializedName("doctor_name") val doctorName: String? = null,
+    val specialisation: String? = null
+)
+
+data class PrescriptionItem(
+    @SerializedName("medication_id") val medicationId: Int = 0,
+    val medication: String = "",
+    val strength: String? = null,
+    val quantity: Int = 0,
+    val dosage: String = "",
+    @SerializedName("unit_price") val unitPrice: Double = 0.0
 )
 
 data class Prescription(
-    @DocumentId val docId: String = "",
-    val prescriptionID: String = "",
-    val patientID: String = "",
-    val doctorID: String = "",
-    val medication: String = "",
-    val dosage: String = "",
-    val notes: String = "",
-    val prescriptionDate: String = "",
-    val status: String = "Active",
-    val createdBy: String = "",
-    val createdAt: String = ""
+    @SerializedName("prescription_id") val prescriptionId: Int = 0,
+    @SerializedName("patient_id") val patientId: Int = 0,
+    @SerializedName("doctor_id") val doctorId: Int = 0,
+    val notes: String? = null,
+    @SerializedName("prescription_date") val prescriptionDate: String = "",
+    @SerializedName("doctor_name") val doctorName: String? = null,
+    val items: List<PrescriptionItem> = emptyList()
+)
+
+data class InvoiceLine(
+    @SerializedName("item_id") val itemId: String? = null,
+    val description: String = "",
+    val quantity: Int = 0,
+    @SerializedName("unit_price") val unitPrice: Double = 0.0,
+    @SerializedName("line_total") val lineTotal: Double = 0.0
 )
 
 data class Invoice(
-    @DocumentId val docId: String = "",
-    val invoiceNumber: String = "",
-    val patientID: String = "",
-    val consultationFee: Double = 0.0,
-    val medicationCost: Double = 0.0,
-    val totalAmount: Double = 0.0,
-    val medicalAid: String = "",
-    val paymentMethod: String = "",
-    val outstandingBalance: Double = 0.0,
-    val status: String = "Paid",
-    val createdBy: String = "",
-    val createdAt: String = ""
+    @SerializedName("invoice_id") val invoiceId: Int = 0,
+    @SerializedName("invoice_number") val invoiceNumber: String = "",
+    @SerializedName("patient_id") val patientId: Int = 0,
+    @SerializedName("prescription_id") val prescriptionId: Int? = null,
+    @SerializedName("billing_date") val billingDate: String = "",
+    @SerializedName("payment_status") val paymentStatus: String = "Unpaid",
+    @SerializedName("payment_method") val paymentMethod: String? = null,
+    @SerializedName("delivery_required") val deliveryRequired: Boolean = false,
+    val total: Double = 0.0,
+    @SerializedName("patient_number") val patientNumber: String? = null,
+    @SerializedName("patient_name") val patientName: String? = null,
+    val lines: List<InvoiceLine> = emptyList()
 )
 
-// ---- Extra ERD entities from the Task 1 design (Department, Staff, Inventory, MedicalRecord) ----
-
-data class Department(
-    @DocumentId val docId: String = "",
-    val departmentID: String = "",
+data class ServiceItem(
+    @SerializedName("service_id") val serviceId: Int = 0,
     val name: String = "",
-    val head: String = "",
-    val location: String = "",
-    val phone: String = "",
-    val description: String = ""
+    val description: String? = null,
+    val price: Double = 0.0
 )
 
-data class Staff(
-    @DocumentId val docId: String = "",
-    val staffID: String = "",
-    val firstName: String = "",
-    val lastName: String = "",
-    val role: String = "",
-    val department: String = "",
-    val email: String = "",
-    val phone: String = ""
+data class Medication(
+    @SerializedName("medication_id") val medicationId: Int = 0,
+    val name: String = "",
+    val strength: String? = null,
+    @SerializedName("unit_price") val unitPrice: Double = 0.0,
+    @SerializedName("stock_qty") val stockQty: Int = 0
+)
+
+data class Ward(
+    @SerializedName("ward_id") val wardId: Int = 0,
+    @SerializedName("ward_name") val wardName: String = "",
+    @SerializedName("bed_number") val bedNumber: Int = 0,
+    val status: String = "Available"
 ) {
-    fun fullName(): String = "$firstName $lastName".trim()
+    val label: String get() = "$wardName / Bed $bedNumber ($status)"
 }
 
-data class InventoryItem(
-    @DocumentId val docId: String = "",
-    val itemID: String = "",
-    val itemName: String = "",
-    val category: String = "",
-    val quantity: Long = 0,
-    val reorderLevel: Long = 0,
-    val unitCost: Double = 0.0,
-    val supplier: String = ""
+data class Admission(
+    @SerializedName("admission_id") val admissionId: Int = 0,
+    @SerializedName("patient_id") val patientId: Int = 0,
+    @SerializedName("ward_id") val wardId: Int = 0,
+    @SerializedName("admission_date") val admissionDate: String = "",
+    val status: String = "Admitted"
 )
 
-data class MedicalRecord(
-    @DocumentId val docId: String = "",
-    val recordID: String = "",
-    val patientID: String = "",
-    val diagnosis: String = "",
-    val treatment: String = "",
-    val doctor: String = "",
-    val recordDate: String = "",
-    val notes: String = ""
+data class NotificationItem(
+    @SerializedName("notification_id") val notificationId: Int = 0,
+    @SerializedName("user_id") val userId: String = "",
+    val message: String = "",
+    @SerializedName("is_read") val isRead: Boolean = false,
+    @SerializedName("created_at") val createdAt: String = ""
 )
 
-/** Collection names used in Firestore (same as the web app). */
-object Collections {
-    const val USERS = "users"
-    const val PATIENTS = "patients"
-    const val APPOINTMENTS = "appointments"
-    const val PRESCRIPTIONS = "prescriptions"
-    const val BILLING = "billing"
-    const val DEPARTMENTS = "departments"
-    const val STAFF = "staff"
-    const val INVENTORY = "inventory"
-    const val MEDICAL_RECORDS = "medicalRecords"
-}
+data class RegisterResult(val message: String = "", val status: String = "Pending", @SerializedName("patient_number") val patientNumber: String? = null)
+data class PrescriptionResult(@SerializedName("prescription_id") val prescriptionId: Int = 0, @SerializedName("invoice_id") val invoiceId: Int = 0)
+data class PaymentResult(val message: String = "", @SerializedName("amount_paid") val amountPaid: Double = 0.0)
+data class ApiMessage(val message: String = "")
+
+data class WorkspaceState(
+    val summary: Summary = Summary(),
+    val registrations: List<PendingRegistration> = emptyList(),
+    val patients: List<Patient> = emptyList(),
+    val doctors: List<Doctor> = emptyList(),
+    val appointments: List<Appointment> = emptyList(),
+    val prescriptions: List<Prescription> = emptyList(),
+    val invoices: List<Invoice> = emptyList(),
+    val services: List<ServiceItem> = emptyList(),
+    val medications: List<Medication> = emptyList(),
+    val wards: List<Ward> = emptyList(),
+    val notifications: List<NotificationItem> = emptyList(),
+    val patientProfile: Patient? = null
+)

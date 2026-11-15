@@ -1,44 +1,51 @@
-# DataCare HMS mobile app - User guide
+# DataCare HMS Android — quick user guide
 
-## 1. Getting started
-1. Open **DataCare HMS**. Tap **Create Account**, enter your name, email, a password (at least 6 characters) and choose your **role**. Tap **Create Account**, then **Login**.
-2. Or tap **Continue with Google** to sign in with a Google account on your phone (new Google users start as *Patient*).
-3. Forgot your password? Type your email, tap **Forgot password?** and follow the email.
+## Sign in
 
-## 2. Moving around
-The bar at the bottom has **Home, Services, Patients, Appointments, Prescriptions, Billing, Reports, More**. Swipe it sideways to see every item. You only see the items your role may use:
+Use the same Firebase email/password account as the DataCare web application. The API checks the account role, email verification, approval and active status before loading the workspace.
 
-| Role | Screens |
-|---|---|
-| Patient | Home, Services, Appointments, Prescriptions, Billing |
-| Receptionist | Home, Services, Patients, Appointments |
-| Doctor | Home, Patients, Appointments, Prescriptions, Reports |
-| Nurse | Home, Patients, Appointments |
-| Pharmacist | Home, Prescriptions |
-| Billing Clerk | Home, Billing, Reports |
-| Hospital Manager | everything except User Management |
-| System Administrator | everything, plus User Management and Load Demo Data |
+## Create a patient account
 
-The bell (top right) opens **Messages & Alerts**. The back arrow returns to the previous screen.
+1. Choose **Create a patient account**.
+2. Enter your name, email, South African cell number, 13-digit ID and a strong password.
+3. Open the verification email and verify the address.
+4. Return to the app and log in.
+5. Complete the patient registration form and re-enter the password you created. The API validates password strength but does not store the password. The account remains pending until an administrator approves it.
 
-## 3. Everyday tasks
-- **Add a patient** - Patients > **Add**. Fill in the form; first name, last name, gender, date of birth, phone and address are required. Tap a patient to see their full record.
-- **Book an appointment** - Appointments > **New**. Choose date and time with the pickers, pick the type, add the ward, **Save**. Use **Reschedule** or **Cancel** on a booking to change it. Filters: All, Confirmed, Completed, Cancelled.
-- **Prescriptions** - Prescriptions > **New**. *My Prescriptions* shows active ones, *History* shows completed/cancelled. **Mark Completed** when dispensed.
-- **Billing** - Billing > **New** to create an invoice (the total is calculated for you). Filters: Invoices, Due, Claims (medical aid) and Paid (payment history). **Make Payment** reduces the outstanding balance.
-- **Reports** - Reports shows totals and charts. Switch between *Patient Statistics*, *Operational* and *Financial*.
+There is no public role picker. An administrator creates doctor accounts. Administrator accounts must already be provisioned in the existing Firebase project.
 
-## 4. Settings (More > Settings)
-Light / Dark / follow phone; Normal / Large / Extra large text; alert dot on or off; Change Password; My Profile. **Logout** is in More.
+## Admin workspace
 
-## 5. Errors you may see
-| Message | What to do |
-|---|---|
-| "Invalid email or password." | Check spelling; use Forgot password? |
-| "This email is already registered." | Login instead |
-| "Network error..." | Check your data/Wi-Fi and retry |
-| "You do not have permission..." | Your role cannot do that; ask a System Administrator |
-| Red text under a field | Fix that field; nothing is saved until all fields are valid |
+- Dashboard: counts, pending registrations and notifications.
+- Patients: add a patient record, view the patient directory, add ward beds and allocate patients.
+- Appointments: book an appointment for a patient.
+- Prescriptions: create a prescription and its consultation invoice.
+- Billing: view hospital invoices.
+- Services: view the service catalogue.
+- Reports: hospital activity summary.
+- User Management: create doctor accounts and view doctors.
 
-## 6. Privacy
-Patient information is confidential (POPIA). Log out when you leave the phone, and only open records you are authorised to see.
+## Doctor workspace
+
+- Dashboard: assigned appointment overview and notifications.
+- Services: view the service catalogue.
+- Appointments: confirm pending requests, adjust the date/time/location, and mark confirmed visits completed.
+- Prescriptions: select an assigned patient, consultation service and medicine to issue a prescription and create a bill.
+
+## Patient workspace
+
+- Dashboard: patient details, appointment/invoice counts and notifications.
+- Services: view the service catalogue.
+- Appointments: request an appointment and view its status.
+- Prescriptions: view prescriptions issued by the doctor.
+- Billing: view invoices, inspect line items and submit the same demonstration payment or medical-aid record as the website.
+
+**Online Demo is not a real payment.** No bank card is charged and no money is transferred.
+
+## Refresh and shared data
+
+Use the refresh icon in the top bar to reload the latest data from the API. Changes saved through the Android app are stored by the same backend used by the web app, and changes made on the website appear after refreshing Android.
+
+## Help
+
+Open the navigation drawer and choose **Need Help? Contact IT Support**.

@@ -1,89 +1,116 @@
-# DataCare HMS - Android app
+# DataCare HMS — Android (Kotlin)
 
-Mobile companion to the DataCare Hospital Management System web app (Netcare Alberton Hospital).
-Kotlin + Jetpack Compose, using the **same Firebase project** (`datacare-hms`) as the website, so users and records are shared.
+Android companion for the current DataCare HMS web application. This version uses **Firebase Authentication for sign-in** and the **same Node.js / Express API as the website for all hospital records**. It does not read or write Firestore directly.
 
-## Open it in Android Studio
-1. Install **Android Studio Ladybug (2024.2)** or newer.
-2. `File > Open` and choose this **DataCare-HMS-Android** folder. Wait for Gradle sync.
-3. Plug in a real phone (Settings > About phone > tap *Build number* 7 times > Developer options > **USB debugging**), pick it in the device list and press **Run**.
-   The demo video must be recorded on a real phone, not an emulator.
+## What is included
 
-Requirements: JDK 17 (bundled with Android Studio), Android 7.0+ (API 24+) phone.
+- Firebase email/password login using the existing DataCare Firebase project.
+- Patient self-registration with email verification and administrator approval.
+- Administrator, doctor and patient workspaces; no public role picker.
+- Role-specific navigation matching `web/main.js`:
+  - **Admin:** Dashboard, Patients, Appointments, Prescriptions, Billing, Services, Reports, User Management.
+  - **Doctor:** Dashboard, Services, Appointments, Prescriptions.
+  - **Patient:** Dashboard, Services, Appointments, Prescriptions, Billing.
+- Admin workflows: approve/reject patient registrations, add patient records, create doctor accounts, add ward beds, allocate patients, book appointments and create prescriptions/bills.
+- Doctor workflows: view assigned appointments, confirm/complete appointments, issue prescriptions and create bills.
+- Patient workflows: view profile, request appointments, view prescriptions/invoices and submit the same demonstration payment / medical-aid selections as the web app.
+- Notifications and the IT Support dialog.
 
-## Splash, onboarding and look
-- **Splash screen:** animated DataCare logo (2.4 s) on every launch.
-- **Onboarding:** 4 swipeable pages (Welcome, Appointments, Prescriptions, Billing & Privacy) shown once, with Skip / Back / Next / Get Started.
-  Re-watch it any time: More > Settings > **Replay welcome tour** (useful for the demo video).
-- **Your own background pictures:** replace the four files in `app/src/main/res/drawable-nodpi/`
-  (`onboarding_1.jpg` ... `onboarding_4.jpg`) with your photos, **keeping the same names** (portrait, ~1080x1920, under 500 KB each).
-  If your photos are PNG, delete the matching .jpg first (two files with the same name break the build).
-  The login header also uses `onboarding_1`. A dark overlay keeps the text readable on any photo.
+## Important architecture
 
-## Firebase set-up (one time, ~10 minutes)
-The app already contains the web app's Firebase config (`FirebaseConfig.kt`), so email/password login and Firestore work as soon as you run it. To finish the Task 2 requirements:
+Both platforms use the same Firebase Authentication project and the same API:
 
-1. **Email/Password sign-in** - Firebase console > Authentication > Sign-in method > enable *Email/Password* (already on if the website login works).
-2. **Single sign-on (Google)**
-   - Enable *Google* in Sign-in method and copy the **Web client ID** (Web SDK configuration).
-   - Paste it into `FirebaseConfig.GOOGLE_WEB_CLIENT_ID`.
-   - Project settings > Your apps > **Add app > Android**, package name `com.datacare.hms`, add the **SHA-1** of your debug key
-     (Android Studio: Gradle panel > `app > Tasks > android > signingReport`). **Every team member who runs the app needs their own SHA-1 added.**
-   - Download `google-services.json` into `android/app/`. The build detects it automatically (it also fixes API-key restrictions if you have any).
-   - Until the Web client ID is set, the Google button simply shows a friendly "not configured" message; nothing crashes.
-See `docs/FIREBASE_SETUP.md` for the full step-by-step Firebase guide.
+`Android app / Web app → Firebase ID token → Node.js API → Firebase Admin SDK → Cloud Firestore`
 
-3. **Firestore rules** - review `firestore.rules` and publish it (Firestore Database > Rules). It requires sign-in and stops users from changing their own role.
-4. **Support email** - set `FirebaseConfig.SUPPORT_EMAIL` to the real IT-support address.
+The API verifies Firebase ID tokens and enforces account status, role permissions and patient/doctor ownership. The Android app does not contain a Firebase service-account key and does not use the old direct-Firestore repository or demo seed data.
 
-## Demo data (at least ten records per table)
-Log in as a **System Administrator** > More > Settings > **Load Demo Data**.
-This writes 12 patients, 12 appointments, 12 prescriptions, 12 invoices and 10 departments, 10 staff, 10 inventory items, 10 medical records.
-It uses fixed document IDs, so pressing it twice never duplicates anything. The data is defined in `data/SeedData.kt` and checked by a unit test.
+The Android package name is `com.datacare.hms`. The included `app/google-services.json` is configured for the existing DataCare Firebase project and this package.
 
-## What matches the website
-| Website (HTML/CSS/JS) | Android app |
-|---|---|
-| Login / Create Account, 8 roles, password >= 6 | `ui/AuthScreens.kt`, same fields and copy, same `users` collection |
-| `rolePermissions` in `js/main.js` | `data/Roles.kt` - identical permission map; bottom bar and screens follow it |
-| Dashboard: 4 stat cards, quick actions, appointment chart | `ui/screens/Dashboard.kt` |
-| Services page (6 services) | `ui/screens/Services.kt` |
-| Patient page (add + search + list) | `ui/screens/Patients.kt` (fields: patientID, firstName, lastName, gender, dateOfBirth, phone, address, medicalHistory, emergencyContact) |
-| Appointments (ID, patient, doctor, date, time, type, ward, status) | `ui/screens/Appointments.kt` + Reschedule / Cancel |
-| Prescriptions (ID, patientID, doctorID, medication, dosage, notes, date, status) | `ui/screens/Prescriptions.kt` |
-| Billing (invoice no., fees, medical aid, method, outstanding, status) | `ui/screens/Billing.kt` + Make Payment, Claims and Payment History views |
-| Reports (patients, appointments, prescriptions, revenue + charts) | `ui/screens/Reports.kt` (Patient Statistics / Operational / Financial) |
-| Brand colours `#0878D1`, `#15956B`, `#D84A4A`, `#7858BF`; DataCare logo | `ui/theme/Theme.kt`, `res/drawable-nodpi/datacare_logo.png` |
+## Requirements
 
-Firestore collections: `users, patients, appointments, prescriptions, billing` (written by the website) plus `departments, staff, inventory, medicalRecords` (ERD entities). Field names are identical, so a record created on the website shows on the phone and vice-versa.
+- Android Studio (current stable version recommended)
+- JDK 17 (Android Studio's bundled JDK is suitable)
+- Android SDK Platform 35
+- Node.js API running or deployed at a reachable HTTPS address
+- Internet access on the Android device/emulator
 
-## Task 2 checklist
-| Requirement | Where |
-|---|---|
-| Registration + login, password encrypted | Firebase Authentication hashes/salts passwords; the app never stores them |
-| Single sign-on | "Continue with Google" (Credential Manager -> Firebase) |
-| Settings screen | More > Settings: theme, text size, alerts, change password, profile |
-| Handles invalid input without crashing | `util/Validators.kt` on every form, field-level error messages, try/catch around every Firebase call (`AppViewModel.launchAction`) |
-| Android code, GUI, input controls, modules | `app/src/main/java/com/datacare/hms/` |
-| DBMS with >= 10 records per table | Cloud Firestore + `SeedData.kt`; schema in `docs/DATABASE.md` |
-| Verification and testing | `app/src/test` (26 unit tests) + manual cases in `docs/TESTING.md` |
-| Help system + user documentation | In-app Help & Support (FAQ), `docs/USER_GUIDE.md` |
-| GitHub Actions: automated tests + build | `.github/workflows/android.yml` |
-| Demo video (real phone, voice-over, show Auth/API/DB) | See "Recording the demo" below |
+## Run with the Android emulator
 
-## Automated tests and CI
-- Local: `./gradlew testDebugUnitTest` (Windows: `gradlew.bat testDebugUnitTest`).
-- GitHub: push the repo; the workflow runs the unit tests, builds the debug APK and uploads both the test report and the APK as artifacts.
-- Keep your Azure DevOps board updated (user stories per screen, tasks, test cases) - that part lives outside the code.
+1. Open Android Studio.
+2. Select **Open** and choose this `DataCare-HMS-Android` folder.
+3. Wait for Gradle Sync to finish.
+4. In a separate PowerShell window, start the existing DataCare API:
 
-## Recording the demo (checklist)
-1. Record the phone screen with voice-over; show every screen, a validation error (e.g. bad email), Settings changes and Logout.
-2. Register a new user, then show it in **Firebase console > Authentication** (the "online-hosted authentication service").
-3. Create an appointment / prescription / invoice on the phone, then show it appear in **Firestore** (the database). Add one on the website and show it on the phone.
-4. The "API" is Firebase's REST/SDK backend: show the project's *Usage* tab or the Network traffic to `firestore.googleapis.com` / `identitytoolkit.googleapis.com`, and say so in the voice-over.
+   ```powershell
+   cd "C:\Users\Hluks\Music\DataCare-HMS_Firestore_Updated_Corrected\DataCare-HMS\api"
+   npm.cmd start
+   ```
 
-## Known limitations (be upfront about these in the report)
-- The Task 1 sitemap lists **Admission** and **Discharge** under Patients, but the website has no such feature or fields, so they are not in the app. Add `admissionStatus` fields to both platforms if the lecturer expects them.
-- The website lets every role with access see all records; the app does the same. Patient-only filtering ("My ...") needs a link between a login and a patient ID, which the current data model does not have.
-- Alerts are derived from live data (upcoming appointments, unpaid invoices); there is no push-notification service yet.
-- Do not ship real patient data in this prototype; use the simulated data (POPIA).
+5. Keep the API terminal open. The Android emulator can reach the computer's localhost through `10.0.2.2`.
+6. The default API address is already set in `app/build.gradle.kts`:
+
+   `http://10.0.2.2:3000/api/`
+
+7. Start an Android emulator, select it in Android Studio and press **Run**.
+
+The web app does not need to be open for Android to work. The API must be running. If you also run the website, both apps read and update the same Firestore records through that API.
+
+## Run on a physical Android phone
+
+The emulator address `10.0.2.2` does not work on a physical phone. Choose one of these approaches:
+
+### Option A — USB debugging
+
+1. Connect the phone to the computer using USB and enable USB debugging.
+2. In Android Studio's Terminal, run:
+
+   ```powershell
+   adb reverse tcp:3000 tcp:3000
+   ```
+
+3. In `app/build.gradle.kts`, change `API_BASE_URL` to:
+
+   ```kotlin
+   buildConfigField("String", "API_BASE_URL", "\"http://127.0.0.1:3000/api/\"")
+   ```
+
+4. Sync Gradle and run the app again. Keep the API running on the computer.
+
+### Option B — Same Wi-Fi network
+
+1. Connect the phone and computer to the same trusted Wi-Fi network.
+2. Find the computer's local IPv4 address using `ipconfig` in PowerShell.
+3. Change `API_BASE_URL` in `app/build.gradle.kts` to `http://YOUR-PC-IP:3000/api/` (replace the example with the computer's actual IPv4 address).
+4. Allow Node.js through Windows Firewall on the private network if Windows asks.
+5. Sync Gradle and run the app again.
+
+For use outside your local network, deploy the API to HTTPS and set `API_BASE_URL` to the deployed `/api/` address. Do not expose the local development API directly to the public internet.
+
+## Account workflow
+
+- **Patients:** Create an account in the app, verify the email from the Firebase email, then sign in and complete the patient registration details. The account remains pending until an administrator approves it.
+- **Doctors:** An administrator creates doctor accounts from **User Management**. The doctor signs in with the temporary password supplied by the administrator.
+- **Administrators:** Use the existing administrator account already provisioned in the DataCare Firebase project. Administrator access is not available through public registration.
+
+The app calls `/api/auth/me` after sign-in. If the API says the account is pending or disabled, the app does not open the workspace.
+
+## Build the app
+
+From Android Studio use **Build → Make Project**. To create a debug APK, use **Build → Build Bundle(s) / APK(s) → Build APK(s)**.
+
+Or from the project root on Windows:
+
+```powershell
+.\gradlew.bat testDebugUnitTest
+.\gradlew.bat assembleDebug
+```
+
+The debug APK is normally created at `app/build/outputs/apk/debug/app-debug.apk`.
+
+## Notes and safety
+
+- Online Demo payment is a demonstration record only. It does not charge a bank card or transfer money.
+- Use fictional patient details for testing. Do not load real patient medical information into this academic prototype.
+- Keep the API service-account key and API `.env` file only on the backend computer/server. Never copy them into this Android project or upload them to GitHub.
+- The Android app allows cleartext HTTP for local development. Use an HTTPS API URL for any deployed or public environment.
+- The Android screens refresh from the API after actions and when the refresh button is pressed. This provides shared data; it is not a Firestore realtime-listener implementation.
